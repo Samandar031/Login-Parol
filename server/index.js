@@ -1,37 +1,53 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const User = require("./models/users.js");
 const app = express();
 
-const { use } = require("express/lib/application");
-const morgan = require("morgan");
-let cors = require("cors");
-
-app.use(morgan("common"));
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  res.setHeader("Acces-Control-Allow-Origin", "*");
-  res.setHeader("Acces-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE");
-  res.setHeader("Acces-Contorl-Allow-Methods", "Content-Type", "Authorization");
-  next();
-});
-
-mongoose.connect(
-  "mongodb+srv://<username>:LUTXXCqxrpTcPcFD@cluster0.91oyr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-  () => {
-    console.log("mongoDB ishladi");
+app.post("/signup", (req, res) => {
+  console.log(req.body);
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    res.status(400).json({
+      message: "boshqattan kiriting",
+    });
   }
-);
 
-app.get("/api", (req, res) => {
-  res.json({
-    msg: "welcome to server",
+  User.findOne({ email }).then((savedUser) => {
+    if (savedUser) {
+      return res.status(400).json({
+        error: "bunda user mavjud",
+      });
+    }
+
+    const user = new User({
+      name: name,
+      email: email,
+      password: password,
+    });
+
+    user
+      .save()
+      .then((user) => {
+        res.json({
+          message: "muvaffaqqiyatli amalga oshirildi",
+          user,
+        });
+      })
+      .catch((err) => {
+        // console.log(err);
+      });
   });
 });
 
-app.listen(7000, () => {
-  console.log("server ishladi");
-});
+mongoose.connect(
+  "mongodb+srv://Samandar021:Iisp9l5PPAfpUAil@cluster0.vb04a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+);
 
-// mongo db parol LUTXXCqxrpTcPcFD//PPspauwTkIPSqq53
+app.listen(7000, "127.0.0.1");
+
+// mongo db parol Iisp9l5PPAfpUAil
+// "mongodb+srv://Samandar021:Iisp9l5PPAfpUAil@cluster0.vb04a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+//
