@@ -68,7 +68,7 @@ app.use((req, res, next) => {
 //     });
 // };
 
-const book = JSON.parse();
+const book = JSON.parse(fs.readFileSync(`${__dirname}/kitoblar.json`, "utf-8"));
 
 app.route("/newContact").get();
 
