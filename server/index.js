@@ -1,53 +1,79 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const User = require("./models/users.js");
 const app = express();
+const mongoose = require("mongoose");
+const cors = require("cors");
 
+app.use(cors);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 
-app.post("/signup", (req, res) => {
-  console.log(req.body);
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    res.status(400).json({
-      message: "boshqattan kiriting",
-    });
-  }
-
-  User.findOne({ email }).then((savedUser) => {
-    if (savedUser) {
-      return res.status(400).json({
-        error: "bunda user mavjud",
-      });
-    }
-
-    const user = new User({
-      name: name,
-      email: email,
-      password: password,
-    });
-
-    user
-      .save()
-      .then((user) => {
-        res.json({
-          message: "muvaffaqqiyatli amalga oshirildi",
-          user,
-        });
-      })
-      .catch((err) => {
-        // console.log(err);
-      });
-  });
+app.use((req, res, next) => {
+  res.setHeader("Acces-Control-Allow-Origin", "*");
+  res.setHeader("Acces-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE");
+  res.setHeader("Acces-Contorl-Allow-Methods", "Content-Type", "Authorization");
+  next();
 });
 
 mongoose.connect(
-  "mongodb+srv://Samandar021:Iisp9l5PPAfpUAil@cluster0.vb04a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+  "mongodb+srv://samandar021:NQElVJEclaWle9fd@cluster0.5ccw2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 );
 
-app.listen(7000, "127.0.0.1");
+// 2.data scheme
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  desc: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  number: {
+    type: Number,
+    required: true,
+  },
+});
 
-// mongo db parol Iisp9l5PPAfpUAil
+// 3.data model
+const Contact = mongoose.model("Contact", userSchema);
+
+// 4.api
+// getContact = (req, res) => {
+//   res.status(200).json({
+//     data: "ishladi",
+//   });
+//   Contact.find()
+//     .then((res) => res.json())
+//     .catch((err) => res.status(400).json({ err }));
+// };
+
+// create route
+postContact = (req, res) => {
+  const newContact = new Contact({
+    name: req.body.name,
+    desc: req.body.desc,
+    number: req.body.number,
+  });
+  console.log(req.body);
+  console.log("bir");
+
+  newContact
+    .save()
+    .then((res) => console.log(res))
+    .catch((err) => {
+      res.status(400).json({ err });
+    });
+};
+
+app.route("/newContact").post(postContact);
+
+// app.route("/newContact").get(getContact);
+
+app.listen(7000, () => {
+  console.log("server ishladi");
+});
+
+// mongo db parol NQElVJEclaWle9fd
 // "mongodb+srv://Samandar021:Iisp9l5PPAfpUAil@cluster0.vb04a.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 //
