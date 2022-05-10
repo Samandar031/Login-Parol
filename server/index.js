@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
+const morgan = require("morgan");
+const fs = require("fs");
 
 app.use(cors);
 app.use(express.json());
@@ -14,29 +16,29 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect(
-  "mongodb+srv://samandar021:NQElVJEclaWle9fd@cluster0.5ccw2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-);
+// mongoose.connect(
+//   "mongodb+srv://samandar021:NQElVJEclaWle9fd@cluster0.5ccw2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+// );
 
 // 2.data scheme
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  desc: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  number: {
-    type: Number,
-    required: true,
-  },
-});
+// const userSchema = new mongoose.Schema({
+//   name: {
+//     type: String,
+//     required: true,
+//   },
+//   desc: {
+//     type: String,
+//     required: true,
+//     unique: true,
+//   },
+//   number: {
+//     type: Number,
+//     required: true,
+//   },
+// });
 
 // 3.data model
-const Contact = mongoose.model("Contact", userSchema);
+// const Contact = mongoose.model("Contact", userSchema);
 
 // 4.api
 // getContact = (req, res) => {
@@ -49,24 +51,26 @@ const Contact = mongoose.model("Contact", userSchema);
 // };
 
 // create route
-postContact = (req, res) => {
-  const newContact = new Contact({
-    name: req.body.name,
-    desc: req.body.desc,
-    number: req.body.number,
-  });
-  console.log(req.body);
-  console.log("bir");
+// postContact = (req, res) => {
+//   const newContact = new Contact({
+//     name: req.body.name,
+//     desc: req.body.desc,
+//     number: req.body.number,
+//   });
+//   console.log(req.body);
+//   console.log("bir");
 
-  newContact
-    .save()
-    .then((res) => console.log(res))
-    .catch((err) => {
-      res.status(400).json({ err });
-    });
-};
+//   newContact
+//     .save()
+//     .then((res) => console.log(res))
+//     .catch((err) => {
+//       res.status(400).json({ err });
+//     });
+// };
 
-app.route("/newContact").post(postContact);
+const book = JSON.parse();
+
+app.route("/newContact").get();
 
 // app.route("/newContact").get(getContact);
 
